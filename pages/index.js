@@ -18,16 +18,23 @@ export default function Home() {
         body: JSON.stringify({ message: input }),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch (parseError) {
+        throw new Error(`Could not parse JSON from backend:\n${text}`);
+      }
 
       if (res.ok) {
         setResponse(data.result);
       } else {
-        setResponse('Error: ' + (data.error || 'Unexpected error'));
+        setResponse(`❌ API Error:\n${data.error || 'Unknown error from backend'}`);
       }
     } catch (err) {
-      console.error('Frontend error:', err);
-      setResponse('An unexpected error occurred.');
+      console.error('Frontend crash:', err);
+      setResponse(`❌ Frontend Exception:\n${err.message}`);
     } finally {
       setLoading(false);
     }
@@ -61,7 +68,15 @@ export default function Home() {
       </button>
 
       {response && (
-        <div style={{ marginTop: '2rem', whiteSpace: 'pre-wrap', background: '#f6f6f6', padding: '1rem', borderRadius: '8px' }}>
+        <div
+          style={{
+            marginTop: '2rem',
+            whiteSpace: 'pre-wrap',
+            background: '#f6f6f6',
+            padding: '1rem',
+            borderRadius: '8px',
+          }}
+        >
           {response}
         </div>
       )}

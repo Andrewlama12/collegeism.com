@@ -29,7 +29,7 @@ async function mockOpenAICompletion(promptType, data) {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 400));
   
-  const { ageRange, context, hobbies, paceLevel, eveningHabits } = data || {};
+  const { ageRange, context, hobbies, paceLevel, eveningHabits, currentHobbies } = data || {};
   
   switch (promptType) {
     case 'life-stages':
@@ -85,6 +85,161 @@ async function mockOpenAICompletion(promptType, data) {
           ]
         };
       }
+      
+    case 'similar-hobbies':
+      // Generate more niche and unique hobby recommendations based on current selections
+      if (!currentHobbies || currentHobbies.length === 0) {
+        return { options: [] };
+      }
+      
+      // Map of more specific/niche hobbies related to common hobbies
+      const nicheHobbyMap = {
+        "Reading": [
+          { icon: "📝", label: "Creative Writing" },
+          { icon: "🔍", label: "Book Club" },
+          { icon: "🎭", label: "Poetry" },
+          { icon: "🗣️", label: "Storytelling" }
+        ],
+        "Fitness": [
+          { icon: "🧘", label: "Yoga" },
+          { icon: "🏊", label: "Swimming" },
+          { icon: "🧗", label: "Rock Climbing" },
+          { icon: "🚴", label: "Cycling" }
+        ],
+        "Gaming": [
+          { icon: "🎲", label: "Board Games" },
+          { icon: "🎮", label: "Game Development" },
+          { icon: "🎯", label: "Esports" },
+          { icon: "🎭", label: "Role-Playing Games" }
+        ],
+        "Music": [
+          { icon: "🎸", label: "Guitar" },
+          { icon: "🎹", label: "Piano" },
+          { icon: "🎧", label: "DJing" },
+          { icon: "✍️", label: "Songwriting" }
+        ],
+        "Cooking": [
+          { icon: "🍞", label: "Baking" },
+          { icon: "🍷", label: "Wine Tasting" },
+          { icon: "🍜", label: "International Cuisine" },
+          { icon: "🌱", label: "Vegan Cooking" }
+        ],
+        "Art": [
+          { icon: "🖌️", label: "Painting" },
+          { icon: "📷", label: "Photography" },
+          { icon: "🧶", label: "Knitting" },
+          { icon: "🧵", label: "Embroidery" }
+        ],
+        "Tech": [
+          { icon: "🤖", label: "Robotics" },
+          { icon: "🧑‍💻", label: "Web Development" },
+          { icon: "📱", label: "App Creation" },
+          { icon: "🔌", label: "Electronics" }
+        ],
+        "Travel": [
+          { icon: "🏕️", label: "Camping" },
+          { icon: "📝", label: "Travel Blogging" },
+          { icon: "🗺️", label: "Backpacking" },
+          { icon: "🏞️", label: "National Parks" }
+        ],
+        "Photography": [
+          { icon: "🌃", label: "Night Photography" },
+          { icon: "👤", label: "Portrait Photography" },
+          { icon: "🐦", label: "Wildlife Photography" },
+          { icon: "🏙️", label: "Urban Photography" }
+        ],
+        "Running": [
+          { icon: "🏃", label: "Trail Running" },
+          { icon: "🏁", label: "Marathon Training" },
+          { icon: "⏱️", label: "Sprint Training" },
+          { icon: "👟", label: "Barefoot Running" }
+        ],
+        "Movies": [
+          { icon: "🎬", label: "Film Studies" },
+          { icon: "🎭", label: "Screenwriting" },
+          { icon: "🎥", label: "Short Film Making" },
+          { icon: "🍿", label: "Film Club" }
+        ],
+        "Social Media": [
+          { icon: "📱", label: "Content Creation" },
+          { icon: "📹", label: "Vlogging" },
+          { icon: "🎙️", label: "Podcasting" },
+          { icon: "📊", label: "Digital Marketing" }
+        ],
+        "Gardening": [
+          { icon: "🪴", label: "Houseplants" },
+          { icon: "🌿", label: "Herb Garden" },
+          { icon: "🌸", label: "Flower Arranging" },
+          { icon: "🍅", label: "Vegetable Growing" }
+        ],
+        "Home Improvement": [
+          { icon: "🪚", label: "Woodworking" },
+          { icon: "🏠", label: "Interior Design" },
+          { icon: "🔨", label: "DIY Projects" },
+          { icon: "🧹", label: "Home Organization" }
+        ],
+        "Entertainment": [
+          { icon: "🎭", label: "Theater" },
+          { icon: "🎤", label: "Karaoke" },
+          { icon: "🎧", label: "Audiobooks" },
+          { icon: "🎪", label: "Live Shows" }
+        ]
+      };
+      
+      // Collect niche hobby suggestions based on user's current selections
+      let suggestedOptions = [];
+      
+      // Add suggestions based on current hobbies
+      currentHobbies.forEach(hobby => {
+        if (nicheHobbyMap[hobby]) {
+          suggestedOptions = [...suggestedOptions, ...nicheHobbyMap[hobby]];
+        }
+      });
+      
+      // Filter out duplicates by label
+      const uniqueOptions = suggestedOptions.filter((option, index, self) =>
+        index === self.findIndex(t => t.label === option.label)
+      );
+      
+      // Add a few random suggestions based on context
+      let contextualSuggestions = [];
+      
+      if (context === "College student") {
+        contextualSuggestions = [
+          { icon: "📝", label: "Debate Club" },
+          { icon: "🌍", label: "Model UN" },
+          { icon: "🧪", label: "Research" },
+          { icon: "🎓", label: "Tutoring" }
+        ];
+      } else if (context === "Working professional") {
+        contextualSuggestions = [
+          { icon: "🗣️", label: "Toastmasters" },
+          { icon: "💼", label: "Networking" },
+          { icon: "📊", label: "Investing" },
+          { icon: "📚", label: "Professional Development" }
+        ];
+      } else if (context === "Parent") {
+        contextualSuggestions = [
+          { icon: "👨‍👩‍👧‍👦", label: "Family Activities" },
+          { icon: "🏫", label: "Volunteering" },
+          { icon: "🧸", label: "DIY Toys" },
+          { icon: "📔", label: "Family Journal" }
+        ];
+      }
+      
+      // Add a few contextual suggestions if we have them
+      if (contextualSuggestions.length > 0) {
+        // Add 2 random contextual suggestions
+        const randomContextual = contextualSuggestions.sort(() => 0.5 - Math.random()).slice(0, 2);
+        uniqueOptions.push(...randomContextual);
+      }
+      
+      // Return up to 8 suggestions, randomized
+      return { 
+        options: uniqueOptions
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 8)
+      };
       
     case 'pace-labels':
       return {

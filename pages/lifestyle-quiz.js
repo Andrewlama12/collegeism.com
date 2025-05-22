@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import Head from 'next/head';
+// Import for JSDoc type references
+/** @typedef {import('../lib/types').Profile} Profile */
 
 const QUESTIONS = [
   {
@@ -44,6 +46,7 @@ const QUESTIONS = [
 
 export default function QuizPage() {
   const [step, setStep] = useState(0);
+  /** @type {[Profile, React.Dispatch<React.SetStateAction<Profile>>]} */
   const [answers, setAnswers] = useState({
     ageRange: '',
     occupation: '',
@@ -53,6 +56,8 @@ export default function QuizPage() {
     evening: '',
   });
   const [submitting, setSubmitting] = useState(false);
+  /** @type {[Profile, React.Dispatch<React.SetStateAction<Profile>>]} */
+  const [profile, setProfile] = useState(null);
 
   const q = QUESTIONS[step];
 
@@ -85,17 +90,23 @@ export default function QuizPage() {
     return val !== '';
   };
 
+  /**
+   * Handle next button click to advance questions or submit
+   * @returns {Promise<void>}
+   */
   const handleNext = async () => {
     if (step < QUESTIONS.length - 1) {
       setStep((s) => s + 1);
     } else {
       setSubmitting(true);
-      await fetch('/api/generate', {
+      const response = await fetch('/api/lifestyle-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(answers),
       });
-      // handle response as you like...
+      
+      const data = await response.json();
+      setProfile(data.plan);
       setSubmitting(false);
       setStep((s) => s + 1);
     }
@@ -203,9 +214,15 @@ export default function QuizPage() {
           ) : (
             <div className="text-center space-y-4">
               <h2 className="text-2xl font-semibold">
-                Thanks! Your personalized plan is on its way.
+                Your Personalized Lifestyle Plan
               </h2>
-              {/* You can render the result here */}
+              {submitting ? (
+                <div className="my-8 text-gray-600">Generating your plan...</div>
+              ) : (
+                <div className="bg-white p-6 rounded-xl shadow-sm mt-6 text-left prose max-w-none whitespace-pre-wrap">
+                  {profile}
+                </div>
+              )}
             </div>
           )}
         </div>

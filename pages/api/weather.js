@@ -11,43 +11,27 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Get API key from environment variable
-    const apiKey = process.env.OPENWEATHER_API_KEY || 'YOUR_DEMO_API_KEY'; // replace with your API key in .env.local
-    
-    // Fetch weather data from OpenWeatherMap
-    const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${apiKey}`
-    );
-    
-    if (!response.ok) {
-      throw new Error(`Weather API returned ${response.status}`);
+    const key = process.env.OPENWEATHER_API_KEY;
+    if (!key) {
+      throw new Error('Missing OpenWeather API key');
     }
     
-    const data = await response.json();
-    
-    // Format the response with just what we need
+    const w = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${key}`
+    ).then(r => r.json());
+
     res.status(200).json({
-      desc: data.weather[0].description,
-      temp: data.main.temp,
-      icon: data.weather[0].icon,
-      conditions: {
-        humidity: data.main.humidity,
-        windSpeed: data.wind.speed,
-        clouds: data.clouds.all
-      }
+      desc: w.weather[0].main,
+      temp: w.main.temp,
+      icon: w.weather[0].icon
     });
   } catch (error) {
     console.error('Weather API error:', error);
-    // Provide fallback weather data for demo purposes
+    // Provide fallback weather data
     res.status(200).json({
-      desc: 'Sunny with scattered clouds',
+      desc: 'Sunny',
       temp: 72,
-      icon: '02d',
-      conditions: {
-        humidity: 65,
-        windSpeed: 5.2,
-        clouds: 40
-      }
+      icon: '01d'
     });
   }
 } 

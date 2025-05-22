@@ -85,9 +85,14 @@ export default function Home() {
               Archetype: <span className="font-medium">{archetype}</span> — Streak: <span className="font-medium">{streak}</span> days
             </div>
           </div>
-          <Link href="/quiz" className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-black transition">
-            Take Deep Quiz
-          </Link>
+          <div className="space-x-2">
+            <Link href="/quiz" className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-black transition">
+              Take Deep Quiz
+            </Link>
+            <Link href="/stress-quiz" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+              Stress Assessment
+            </Link>
+          </div>
         </div>
 
         <div className="space-y-6 max-w-2xl">

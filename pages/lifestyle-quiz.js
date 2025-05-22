@@ -56,7 +56,7 @@ export default function QuizPage() {
     evening: '',
   });
   const [submitting, setSubmitting] = useState(false);
-  /** @type {[Profile, React.Dispatch<React.SetStateAction<Profile>>]} */
+  /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
   const [profile, setProfile] = useState(null);
 
   const q = QUESTIONS[step];

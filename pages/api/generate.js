@@ -8,12 +8,9 @@ export default async function handler(req, res) {
 
   if (!apiKey) {
     return res.status(500).json({
-      error: "❌ OPENAI_API_KEY is missing. Please set it in Vercel → Settings → Environment Variables.",
+      error: "❌ OPENAI_API_KEY is missing. Set it in Vercel → Settings → Environment Variables.",
     });
   }
-
-  const configuration = new Configuration({ apiKey });
-  const openai = new OpenAIApi(configuration);
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: '❌ Method Not Allowed' });
@@ -22,18 +19,20 @@ export default async function handler(req, res) {
   const { message } = req.body;
 
   if (!message) {
-    console.log("⚠️ No message provided in body");
-    return res.status(400).json({ error: '❌ No message provided.' });
+    console.log("⚠️ No message provided");
+    return res.status(400).json({ error: '❌ No message provided in request body.' });
   }
 
   try {
+    const configuration = new Configuration({ apiKey });
+    const openai = new OpenAIApi(configuration);
+
     const response = await openai.createChatCompletion({
-      model: 'gpt-4o', // You can change to 'gpt-3.5-turbo' if you don't have access
+      model: 'gpt-4o', // or use 'gpt-3.5-turbo' if gpt-4o is not accessible
       messages: [
         {
           role: 'system',
-          content:
-            'You are a helpful AI life planner that gives users simple, effective weekly plans based on their needs.',
+          content: 'You are an expert AI life planner who creates weekly schedules for time, money, and health.',
         },
         {
           role: 'user',
@@ -42,21 +41,25 @@ export default async function handler(req, res) {
       ],
     });
 
-    const output = response.data?.choices?.[0]?.message?.content;
+    const result = response.data?.choices?.[0]?.message?.content;
 
-    if (!output) {
-      throw new Error("❌ No response from OpenAI");
+    if (!result) {
+      console.log("⚠️ OpenAI returned no content.");
+      return res.status(500).json({ error: '❌ OpenAI did not return a response.' });
     }
 
-    console.log("✅ Plan generated:", output);
-    res.status(200).json({ result: output });
+    console.log("✅ Plan generated");
+    return res.status(200).json({ result });
 
   } catch (error) {
     const fullError = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
-    console.error("🔥 FULL ERROR OBJECT:", fullError);
+    console.error("🔥 OPENAI ERROR:", fullError);
 
-    res.status(500).json({
-      error: fullError || '❌ Internal Server Error',
+    // Always send a JSON response
+    return res.status(500).json({
+      error: error?.response?.data?.error?.message ||
+             error?.message ||
+             "❌ Unknown server error occurred during OpenAI call.",
     });
   }
 }

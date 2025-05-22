@@ -7,7 +7,8 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
-  console.log('API KEY PRESENT:', Boolean(process.env.OPENAI_API_KEY));
+  console.log('🔍 REQUEST METHOD:', req.method);
+  console.log('🔐 API KEY:', process.env.OPENAI_API_KEY ? 'PRESENT ✅' : 'MISSING ❌');
 
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -16,6 +17,7 @@ export default async function handler(req, res) {
   const { message } = req.body;
 
   if (!message) {
+    console.log('⚠️ No message provided');
     return res.status(400).json({ error: 'No message provided' });
   }
 
@@ -25,8 +27,7 @@ export default async function handler(req, res) {
       messages: [
         {
           role: 'system',
-          content:
-            'You are a professional AI life planner that simplifies life into clear weekly goals for health, money, and time.',
+          content: 'You are a helpful AI life planner...',
         },
         {
           role: 'user',
@@ -35,11 +36,17 @@ export default async function handler(req, res) {
       ],
     });
 
-    res.status(200).json({ result: response.data.choices[0].message.content });
+    console.log('✅ OpenAI response received:', response.data);
+
+    const output = response.data.choices?.[0]?.message?.content;
+
+    if (!output) {
+      throw new Error('No output returned from OpenAI');
+    }
+
+    res.status(200).json({ result: output });
   } catch (error) {
-    console.error('OpenAI API Error:', error?.response?.data || error.message);
-    res.status(500).json({
-      error: error?.response?.data?.error?.message || error.message || 'Unknown error',
-    });
+    console.error('🔥 FULL ERROR:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2));
+    res.status(500).json({ error: 'Internal Server Error: ' + (error.message || 'Unknown') });
   }
 }

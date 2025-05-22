@@ -58,96 +58,101 @@ export default function LifePlannerForm() {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">AI Life Planner</h1>
-      <div className="mb-4">Step {step + 1} of {steps.length}: {steps[step]}</div>
+    <div className="max-w-3xl mx-auto p-8 bg-white shadow-md rounded-lg font-sans">
+      <h1 className="text-3xl font-semibold mb-6">🧠 AI Life Planner</h1>
+      <div className="text-sm text-gray-500 mb-6">Step {step + 1} of {steps.length}: <span className="text-gray-700 font-medium">{steps[step]}</span></div>
 
-      {step === 0 && (
-        <div className="grid gap-4">
-          <input name="age" value={form.age} onChange={handleChange} placeholder="Age" className="p-2 border" />
-          <select name="time" value={form.time} onChange={handleChange} className="p-2 border">
-            <option value="">Time available per day</option>
-            <option value="30 mins">30 mins</option>
-            <option value="1 hour">1 hour</option>
-            <option value="2+ hours">2+ hours</option>
-          </select>
-        </div>
-      )}
+      <div className="space-y-6">
+        {step === 0 && (
+          <div className="grid gap-6">
+            <input name="age" value={form.age} onChange={handleChange} placeholder="Age" className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <select name="time" value={form.time} onChange={handleChange} className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Time available per day</option>
+              <option value="30 mins">30 mins</option>
+              <option value="1 hour">1 hour</option>
+              <option value="2+ hours">2+ hours</option>
+            </select>
+          </div>
+        )}
 
-      {step === 1 && (
-        <div className="grid gap-2">
-          <div className="mb-2">Top stressors:</div>
-          {['money', 'school', 'job', 'relationships', 'mental health', 'body'].map((s) => (
-            <label key={s} className="inline-flex items-center gap-2">
-              <input
-                type="checkbox"
-                value={s}
-                checked={form.stressors.includes(s)}
-                onChange={handleCheckboxChange}
-              />
-              {s}
-            </label>
-          ))}
-          <select name="goal" value={form.goal} onChange={handleChange} className="p-2 border">
-            <option value="">Main goal</option>
-            <option value="clarity">Clarity</option>
-            <option value="routine">Routine</option>
-            <option value="productivity">Productivity</option>
-            <option value="confidence">Confidence</option>
-            <option value="peace">Peace</option>
-          </select>
-        </div>
-      )}
+        {step === 1 && (
+          <div className="grid gap-6">
+            <div className="text-sm font-medium text-gray-700">Top stressors:</div>
+            <div className="grid grid-cols-2 gap-2">
+              {['money', 'school', 'job', 'relationships', 'mental health', 'body'].map((s) => (
+                <label key={s} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    value={s}
+                    checked={form.stressors.includes(s)}
+                    onChange={handleCheckboxChange}
+                    className="accent-blue-500"
+                  />
+                  {s}
+                </label>
+              ))}
+            </div>
+            <select name="goal" value={form.goal} onChange={handleChange} className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Main goal</option>
+              <option value="clarity">Clarity</option>
+              <option value="routine">Routine</option>
+              <option value="productivity">Productivity</option>
+              <option value="confidence">Confidence</option>
+              <option value="peace">Peace</option>
+            </select>
+          </div>
+        )}
 
-      {step === 2 && (
-        <div className="grid gap-4">
-          <select name="income" value={form.income} onChange={handleChange} className="p-2 border">
-            <option value="">Monthly income</option>
-            <option value="<$1k">&lt;$1k</option>
-            <option value="$1k–$3k">$1k–$3k</option>
-            <option value=">$3k">&gt;$3k</option>
-          </select>
-          <select name="living" value={form.living} onChange={handleChange} className="p-2 border">
-            <option value="">Living situation</option>
-            <option value="alone">Alone</option>
-            <option value="parents">With parents</option>
-            <option value="partner">With partner</option>
-            <option value="roommates">With roommates</option>
-          </select>
-        </div>
-      )}
+        {step === 2 && (
+          <div className="grid gap-6">
+            <select name="income" value={form.income} onChange={handleChange} className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Monthly income</option>
+              <option value="<$1k">&lt;$1k</option>
+              <option value="$1k–$3k">$1k–$3k</option>
+              <option value=">$3k">&gt;$3k</option>
+            </select>
+            <select name="living" value={form.living} onChange={handleChange} className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Living situation</option>
+              <option value="alone">Alone</option>
+              <option value="parents">With parents</option>
+              <option value="partner">With partner</option>
+              <option value="roommates">With roommates</option>
+            </select>
+          </div>
+        )}
 
-      {step === 3 && (
-        <div className="grid gap-4">
-          <select name="location" value={form.location} onChange={handleChange} className="p-2 border">
-            <option value="">Location type</option>
-            <option value="city">City</option>
-            <option value="suburb">Suburb</option>
-            <option value="rural">Rural</option>
-          </select>
-          <textarea
-            name="notes"
-            value={form.notes}
-            onChange={handleChange}
-            placeholder="Anything else you're feeling or dealing with"
-            className="p-2 border"
-          />
-        </div>
-      )}
+        {step === 3 && (
+          <div className="grid gap-6">
+            <select name="location" value={form.location} onChange={handleChange} className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Location type</option>
+              <option value="city">City</option>
+              <option value="suburb">Suburb</option>
+              <option value="rural">Rural</option>
+            </select>
+            <textarea
+              name="notes"
+              value={form.notes}
+              onChange={handleChange}
+              placeholder="Anything else you're feeling or dealing with"
+              className="border border-gray-300 rounded-md p-3 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        )}
+      </div>
 
-      <div className="mt-6 flex justify-between">
-        {step > 0 && <button onClick={handleBack} className="px-4 py-2 bg-gray-200">Back</button>}
+      <div className="mt-8 flex justify-between">
+        {step > 0 && <button onClick={handleBack} className="px-4 py-2 text-sm border border-gray-300 rounded-md">Back</button>}
         {step < steps.length - 1 ? (
-          <button onClick={handleNext} className="px-4 py-2 bg-blue-600 text-white">Next</button>
+          <button onClick={handleNext} className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md">Next</button>
         ) : (
-          <button onClick={handleSubmit} className="px-4 py-2 bg-green-600 text-white" disabled={loading}>
+          <button onClick={handleSubmit} className="px-4 py-2 text-sm bg-green-600 text-white rounded-md" disabled={loading}>
             {loading ? 'Generating...' : 'Generate Plan'}
           </button>
         )}
       </div>
 
       {response && (
-        <div className="mt-6 p-4 bg-gray-100 whitespace-pre-wrap rounded border">
+        <div className="mt-8 border-t pt-6 text-gray-800 leading-relaxed whitespace-pre-wrap text-[15px] font-light">
           {response}
         </div>
       )}

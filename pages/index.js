@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import Onboard from '../components/Onboard';
 import {
   getArchetype,
@@ -77,9 +78,16 @@ export default function Home() {
   return (
     <>
       <div className="min-h-screen bg-gray-50 p-8 font-sans">
-        <h1 className="text-4xl font-semibold mb-2">Stress-Aware Planner</h1>
-        <div className="text-gray-600 mb-6">
-          Archetype: <span className="font-medium">{archetype}</span> — Streak: <span className="font-medium">{streak}</span> days
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-4xl font-semibold mb-2">Stress-Aware Planner</h1>
+            <div className="text-gray-600">
+              Archetype: <span className="font-medium">{archetype}</span> — Streak: <span className="font-medium">{streak}</span> days
+            </div>
+          </div>
+          <Link href="/quiz" className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-black transition">
+            Take Deep Quiz
+          </Link>
         </div>
 
         <div className="space-y-6 max-w-2xl">

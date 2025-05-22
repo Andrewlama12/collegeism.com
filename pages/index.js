@@ -18,23 +18,24 @@ export default function Home() {
         body: JSON.stringify({ message: input }),
       });
 
-      const text = await res.text();
-      let data;
+      const rawText = await res.text();
+      let data = null;
 
       try {
-        data = JSON.parse(text);
+        data = JSON.parse(rawText);
       } catch (parseError) {
-        throw new Error(`Could not parse JSON from backend:\n${text}`);
+        throw new Error(`❌ Could not parse JSON from backend:\n${rawText}`);
       }
 
       if (res.ok) {
         setResponse(data.result);
       } else {
-        setResponse(`❌ API Error:\n${data.error || 'Unknown error from backend'}`);
+        setResponse(`❌ API Error:\n${data.error || 'No error message returned from server.'}`);
       }
     } catch (err) {
-      console.error('Frontend crash:', err);
-      setResponse(`❌ Frontend Exception:\n${err.message}`);
+      console.error("🔥 FULL FRONTEND ERROR OBJECT:", err);
+      const fullError = JSON.stringify(err, Object.getOwnPropertyNames(err), 2);
+      setResponse(`❌ Frontend Exception:\n${fullError}`);
     } finally {
       setLoading(false);
     }

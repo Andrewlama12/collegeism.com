@@ -34,15 +34,15 @@ export default async function handler(req, res) {
 
 The current weather is: ${weather.desc}, ${Math.round(weather.temp)}°F.
 
-Return the schedule as a JSON array where each item has a 24-hour format 'hour' (number) and 'text' (string) with the activity.
-Include specific activities suited to the current weather, and make it a well-balanced, productive day.
-Cover only waking hours (6am-11pm) with hourly entries. Limit each text to 50 characters max.
+Format each line of the schedule as: 
+"[HOUR]:00 – [ACTIVITY]"
 
-Example format:
-[
-  { "hour": 6, "text": "Morning meditation" },
-  { "hour": 7, "text": "Breakfast & planning the day" }
-]`;
+For example:
+"7:00 – Morning meditation"
+"8:00 – Breakfast & planning the day"
+
+Include specific activities suited to the current weather, and make it a well-balanced, productive day.
+Cover only waking hours (6am-11pm). Limit each activity description to 50 characters max.`;
 
   try {
     const ai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -50,35 +50,30 @@ Example format:
       model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.7,
-      response_format: { type: "json_object" }
+      max_tokens: 500
     });
 
-    // Parse the response as JSON
-    let plan;
-    try {
-      const content = response.choices[0].message.content.trim();
-      const parsedResponse = JSON.parse(content);
-      plan = parsedResponse.hasOwnProperty('plan') ? parsedResponse.plan : parsedResponse;
-      
-      // Ensure it's an array
-      if (!Array.isArray(plan)) {
-        throw new Error('Invalid plan format');
+    const planText = response.choices[0].message.content.trim();
+    
+    // Parse the text format into structured data
+    const lines = planText.split('\n').filter(Boolean);
+    // assume each line prefixed like "8:00 – Do X"
+    const schedule = lines.map(line => {
+      // Look for various time formats like "8:00 -" or "8:00 –" or "8:00:"
+      const match = line.match(/^(\d+)(?::00)?(?:\s*[-–:]\s*)(.*)/);
+      if (match) {
+        return { 
+          hour: parseInt(match[1]), 
+          text: match[2].trim().substring(0, 50) // Limit to 50 chars
+        };
       }
-      
-      // Verify and clean up the format
-      plan = plan.map(item => ({
-        hour: typeof item.hour === 'number' ? item.hour : parseInt(item.hour),
-        text: item.text.substring(0, 50) // Ensure text is not too long
-      }));
-      
-      // Sort by hour
-      plan.sort((a, b) => a.hour - b.hour);
-    } catch (parseError) {
-      console.error('Error parsing AI response:', parseError);
-      throw new Error('Failed to parse the schedule data');
-    }
+      return null;
+    }).filter(Boolean); // Remove any null entries
+    
+    // Sort by hour
+    schedule.sort((a, b) => a.hour - b.hour);
 
-    res.status(200).json({ plan });
+    res.status(200).json({ plan: schedule });
   } catch (err) {
     console.error('Error generating plan:', err);
     // Provide a fallback schedule for demo purposes

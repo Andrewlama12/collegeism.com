@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 
 export default function DynamicQuiz() {
   const [qa, setQa] = useState([
@@ -52,9 +53,21 @@ export default function DynamicQuiz() {
       </Head>
       <main className="min-h-screen bg-gray-50 p-8 font-sans text-gray-800">
         <div className="max-w-2xl mx-auto space-y-6">
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-semibold">Tell me about you</h1>
+            <Link href="/" className="text-gray-600 hover:text-black">
+              Back to Planner
+            </Link>
+          </div>
+          
+          {!process.env.OPENAI_API_KEY && (
+            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg text-sm">
+              <strong>Note:</strong> Add your OpenAI API key to .env.local to enable AI-powered questions and profiles.
+            </div>
+          )}
+          
           {!finished ? (
             <>
-              <h1 className="text-3xl font-semibold">Tell me about you</h1>
               {qa.map(({ question, answer }, i) => (
                 <div key={i} className={`p-4 rounded-lg ${i === qa.length-1 ? 'bg-white shadow' : 'bg-gray-100'}`}>
                   <div className="font-medium mb-2">{question}</div>

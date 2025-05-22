@@ -92,6 +92,9 @@ export default function Home() {
             <Link href="/stress-quiz" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
               Stress Assessment
             </Link>
+            <Link href="/lifestyle-quiz" className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+              Lifestyle Quiz
+            </Link>
           </div>
         </div>
 

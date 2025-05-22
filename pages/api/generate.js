@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from 'openai';
 
 export default async function handler(req, res) {
   console.log("🧠 API route hit");
@@ -19,16 +19,14 @@ export default async function handler(req, res) {
   const { message } = req.body;
 
   if (!message) {
-    console.log("⚠️ No message provided");
     return res.status(400).json({ error: '❌ No message provided in request body.' });
   }
 
   try {
-    const configuration = new Configuration({ apiKey });
-    const openai = new OpenAIApi(configuration);
+    const openai = new OpenAI({ apiKey });
 
-    const response = await openai.createChatCompletion({
-      model: 'gpt-4o', // or use 'gpt-3.5-turbo' if gpt-4o is unavailable
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o',
       messages: [
         {
           role: 'system',
@@ -41,14 +39,12 @@ export default async function handler(req, res) {
       ],
     });
 
-    const result = response.data?.choices?.[0]?.message?.content;
+    const result = response.choices?.[0]?.message?.content;
 
     if (!result) {
-      console.log("⚠️ OpenAI returned no content.");
       return res.status(500).json({ error: '❌ OpenAI did not return a response.' });
     }
 
-    console.log("✅ Plan generated");
     return res.status(200).json({ result });
 
   } catch (error) {

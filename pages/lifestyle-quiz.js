@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Head from 'next/head';
+import { saveProfile } from '../lib/storage';
 // Import for JSDoc type references
 /** @typedef {import('../lib/types').Profile} Profile */
 
@@ -99,6 +100,10 @@ export default function QuizPage() {
       setStep((s) => s + 1);
     } else {
       setSubmitting(true);
+      
+      // Save the profile to local storage
+      await saveProfile(answers);
+      
       const response = await fetch('/api/lifestyle-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

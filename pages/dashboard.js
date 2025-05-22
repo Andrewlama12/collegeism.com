@@ -23,7 +23,7 @@ export default function Dashboard() {
     loadUserData();
   }, []);
   
-  // Fetch weather data on mount
+  // Fetch weather data on mount (keeping for use in questionnaire)
   useEffect(() => {
     fetch('/api/geo')
       .then(r => r.json())
@@ -57,18 +57,8 @@ export default function Dashboard() {
       
       <div className="bg-white rounded-3xl shadow-lg overflow-hidden max-w-5xl w-full">
         <div className="p-8 md:p-12">
-          <div className="flex justify-between items-center mb-8">
+          <div className="mb-8">
             <h1 className="text-3xl font-bold">Let's get to know you</h1>
-            
-            <div className="flex items-center">
-              <span className="mr-2">{weather.city}</span>
-              {weather.icon && (
-                <span className="w-8 h-8 bg-contain bg-no-repeat bg-center inline-block"
-                  style={{ backgroundImage: `url(https://openweathermap.org/img/wn/${weather.icon}.png)` }}
-                />
-              )}
-              <span className="text-xl font-medium">{Math.round(weather.temp)}°</span>
-            </div>
           </div>
           
           <EfficientQuestionnaire 

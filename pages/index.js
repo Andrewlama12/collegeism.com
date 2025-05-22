@@ -1,218 +1,164 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import Onboard from '../components/Onboard';
+import {
+  getArchetype,
+  setArchetype,
+  getPlans,
+  addPlan,
+  getStreak,
+  getPlanCountThisMonth
+} from '../lib/storage';
 
-export default function LifePlannerForm() {
+export default function Home() {
+  const [archetype, setArchState] = useState(null);
   const [form, setForm] = useState({
-    age: '30',
-    occupation: 'Engineer',
-    stressLevel: 3,
-    caffeine: 'High',
-    relationship: 'Strong',
+    stress: 5,
+    caffeine: 'medium',
+    alcohol: 'none',
+    relationships: 'average',
   });
-
+  const [plan, setPlan] = useState('');
   const [loading, setLoading] = useState(false);
-  const [steps, setSteps] = useState([]);
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    getArchetype().then(a => {
+      if (a) {
+        setArchState(a);
+        getStreak().then(setStreak);
+      }
+    });
+  }, []);
+
+  const handleOnboard = async (a) => {
+    await setArchetype(a);
+    setArchState(a);
+    setStreak(await getStreak());
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm(f => ({ ...f, [name]: value }));
   };
 
-  const handleSliderChange = (name, value) => {
-    setForm((prev) => ({ ...prev, [name]: parseInt(value) }));
+  const handleSlider = (name, value) => {
+    setForm(f => ({ ...f, [name]: value }));
   };
 
-  const handleSubmit = async () => {
+  const generate = async () => {
     setLoading(true);
-    try {
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      const result = data.result || '';
-      
-      // Parse the response into steps or use default steps
-      const stepsArray = result && result.trim()
-        ? result
-            .split('\n')
-            .filter(line => line.trim())
-            .map(line => line.replace(/^\d+\.\s*/, '').trim())
-            .filter(line => line)
-        : ['Take a walk outside', 'Declutter your workspace', 'Set boundaries at work', 'Try a new hobby', 'Talk to a therapist'];
-      
-      setSteps(stepsArray);
-    } catch (err) {
-      console.error(err);
-      setSteps(['Error generating plan. Please try again.']);
-    } finally {
+    setPlan('');
+    const count = await getPlanCountThisMonth();
+    if (count >= 3) {
+      alert('Free limit of 3 plans/month reached. Come back next month!');
       setLoading(false);
+      return;
     }
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archetype, ...form }),
+    });
+    const json = await res.json();
+    const text = json.result || json.error || 'No response';
+    setPlan(text);
+    if (res.ok) {
+      await addPlan(text);
+      setStreak(await getStreak());
+    }
+    setLoading(false);
   };
 
-  // Helper function to create select with dropdown arrow
-  const createSelect = (name, value, onChange, options) => {
-    return React.createElement('div', { className: 'relative' },
-      React.createElement('select', {
-        name,
-        value,
-        onChange,
-        className: 'w-full p-3 border border-gray-100 rounded-lg appearance-none pr-10 bg-white text-lg'
-      }, options.map(opt => 
-        React.createElement('option', { key: opt.value, value: opt.value }, opt.label)
-      )),
-      React.createElement('div', {
-        className: 'absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none'
-      }, React.createElement('svg', {
-        className: 'w-4 h-4 text-gray-400',
-        fill: 'none',
-        stroke: 'currentColor',
-        viewBox: '0 0 24 24',
-        width: '16',
-        height: '16'
-      }, React.createElement('path', {
-        strokeLinecap: 'round',
-        strokeLinejoin: 'round',
-        strokeWidth: '2',
-        d: 'M19 9l-7 7-7-7'
-      })))
-    );
-  };
+  if (!archetype) {
+    return <Onboard onDone={handleOnboard} />;
+  }
 
-  // Create form section
-  const formSection = React.createElement('div', {
-    className: 'w-full md:w-1/2 p-10 md:p-16 md:border-r border-gray-100 flex flex-col'
-  }, [
-    // Title
-    React.createElement('h1', { 
-      key: 'title',
-      className: 'text-4xl font-bold mb-14' 
-    }, 'Stress Reduction'),
-    
-    // Form content
-    React.createElement('div', { key: 'form', className: 'space-y-8 flex-grow' }, [
-      // Age
-      React.createElement('div', { key: 'age-group' }, [
-        React.createElement('label', { 
-          className: 'block text-xl mb-3 font-normal' 
-        }, 'Age'),
-        createSelect('age', form.age, handleChange, [
-          { value: '20', label: '20' },
-          { value: '30', label: '30' },
-          { value: '40', label: '40' },
-          { value: '50', label: '50' },
-          { value: '60+', label: '60+' }
-        ])
-      ]),
-      
-      // Occupation
-      React.createElement('div', { key: 'occupation-group' }, [
-        React.createElement('label', { 
-          className: 'block text-xl mb-3 font-normal' 
-        }, 'Occupation'),
-        createSelect('occupation', form.occupation, handleChange, [
-          { value: 'Engineer', label: 'Engineer' },
-          { value: 'Teacher', label: 'Teacher' },
-          { value: 'Healthcare', label: 'Healthcare' },
-          { value: 'Business', label: 'Business' },
-          { value: 'Student', label: 'Student' },
-          { value: 'Other', label: 'Other' }
-        ])
-      ]),
-      
-      // Stress Level
-      React.createElement('div', { key: 'stress-group' }, [
-        React.createElement('label', { 
-          className: 'block text-xl mb-3 font-normal' 
-        }, 'Stress Level'),
-        React.createElement('div', {
-          className: 'flex items-center space-x-4'
-        }, [
-          React.createElement('input', {
-            type: 'range',
-            min: '1',
-            max: '5',
-            value: form.stressLevel,
-            onChange: (e) => handleSliderChange('stressLevel', e.target.value),
-            className: 'w-full h-1 bg-gray-200 rounded-full appearance-none'
-          }),
-          React.createElement('span', {
-            className: 'text-xl'
-          }, form.stressLevel)
-        ])
-      ]),
-      
-      // Caffeine Consumption
-      React.createElement('div', { key: 'caffeine-group' }, [
-        React.createElement('label', { 
-          className: 'block text-xl mb-3 font-normal' 
-        }, 'Caffeine Consumption'),
-        createSelect('caffeine', form.caffeine, handleChange, [
-          { value: 'None', label: 'None' },
-          { value: 'Low', label: 'Low' },
-          { value: 'Medium', label: 'Medium' },
-          { value: 'High', label: 'High' }
-        ])
-      ]),
-      
-      // Relationship Strength
-      React.createElement('div', { key: 'relationship-group' }, [
-        React.createElement('label', { 
-          className: 'block text-xl mb-3 font-normal' 
-        }, 'Relationship Strength'),
-        createSelect('relationship', form.relationship, handleChange, [
-          { value: 'Single', label: 'Single' },
-          { value: 'Weak', label: 'Weak' },
-          { value: 'Moderate', label: 'Moderate' },
-          { value: 'Strong', label: 'Strong' }
-        ])
-      ]),
-      
-      // Generate Button
-      React.createElement('button', {
-        key: 'generate-btn',
-        onClick: handleSubmit,
-        disabled: loading,
-        className: 'w-full p-3 mt-8 bg-white border border-gray-200 rounded-lg text-lg font-normal hover:bg-gray-50 transition-all'
-      }, loading ? 'Generating...' : 'Generate Plan')
-    ])
-  ]);
+  return (
+    <>
+      <div className="min-h-screen bg-gray-50 p-8 font-sans">
+        <h1 className="text-4xl font-semibold mb-2">Stress-Aware Planner</h1>
+        <div className="text-gray-600 mb-6">
+          Archetype: <span className="font-medium">{archetype}</span> — Streak: <span className="font-medium">{streak}</span> days
+        </div>
 
-  // Create steps section
-  const stepsSection = React.createElement('div', {
-    className: 'w-full md:w-1/2 p-10 md:p-16 bg-white'
-  }, [
-    // Title
-    React.createElement('h1', { 
-      key: 'title',
-      className: 'text-4xl font-bold mb-14' 
-    }, 'Personalized Steps'),
-    
-    // Steps content
-    React.createElement('div', { 
-      key: 'steps-content',
-      className: 'space-y-6' 
-    }, steps.length > 0 
-      ? steps.map((step, index) => 
-          React.createElement('div', {
-            key: `step-${index}`,
-            className: 'p-6 bg-white border border-gray-100 rounded-2xl shadow-sm'
-          }, React.createElement('p', {
-            className: 'text-xl font-normal'
-          }, step))
-        )
-      : [React.createElement('p', {
-          key: 'placeholder',
-          className: 'text-gray-500 text-xl'
-        }, 'Generate a plan to see your personalized steps')]
-    )
-  ]);
+        <div className="space-y-6 max-w-2xl">
+          {/* Inputs */}
+          <div className="bg-white p-6 rounded-2xl border shadow-sm space-y-6">
+            <div>
+              <label className="block font-medium mb-1">Stress Level</label>
+              <input
+                type="range"
+                min="0"
+                max="10"
+                value={form.stress}
+                onChange={e => handleSlider('stress', e.target.value)}
+                className="w-full"
+              />
+              <div className="mt-1 text-sm">Level: {form.stress}</div>
+            </div>
+            <div>
+              <label className="block font-medium mb-1">Caffeine</label>
+              <select
+                name="caffeine"
+                value={form.caffeine}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg"
+              >
+                <option>none</option>
+                <option>low</option>
+                <option>medium</option>
+                <option>high</option>
+              </select>
+            </div>
+            <div>
+              <label className="block font-medium mb-1">Alcohol/Drugs</label>
+              <select
+                name="alcohol"
+                value={form.alcohol}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg"
+              >
+                <option>none</option>
+                <option>occasional</option>
+                <option>regular</option>
+              </select>
+            </div>
+            <div>
+              <label className="block font-medium mb-1">Relationships</label>
+              <select
+                name="relationships"
+                value={form.relationships}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg"
+              >
+                <option>weak</option>
+                <option>average</option>
+                <option>strong</option>
+              </select>
+            </div>
+          </div>
 
-  // Main container
-  return React.createElement('div', {
-    className: 'min-h-screen bg-white text-black font-sans'
-  }, React.createElement('div', {
-    className: 'flex flex-col md:flex-row min-h-screen'
-  }, [formSection, stepsSection]));
+          <button
+            onClick={generate}
+            disabled={loading}
+            className="w-full bg-black text-white py-3 rounded-lg text-lg hover:bg-gray-800 transition"
+          >
+            {loading ? 'Generating…' : 'Generate Steps'}
+          </button>
+
+          {plan && (
+            <div className="bg-white p-6 rounded-2xl border shadow-sm prose">
+              <h2 className="text-2xl font-semibold mb-4">Your Steps</h2>
+              <ol className="list-decimal list-inside space-y-2">
+                {plan.split('\n').map((line, i) => (
+                  <li key={i}>{line}</li>
+                ))}
+              </ol>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
 }

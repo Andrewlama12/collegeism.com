@@ -10,6 +10,7 @@ import {
   getStreak,
   getPlanCountThisMonth
 } from '../lib/storage';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const [archetype, setArchState] = useState(null);
@@ -22,6 +23,7 @@ export default function Home() {
   const [plan, setPlan] = useState('');
   const [loading, setLoading] = useState(false);
   const [streak, setStreak] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     getArchetype().then(a => {
@@ -31,6 +33,10 @@ export default function Home() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    router.replace('/dashboard');
+  }, [router]);
 
   const handleOnboard = async (a) => {
     await setArchetype(a);
@@ -76,108 +82,11 @@ export default function Home() {
   }
 
   return (
-    <>
-      <div className="min-h-screen bg-gray-50 p-8 font-sans">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-4xl font-semibold mb-2">Stress-Aware Planner</h1>
-            <div className="text-gray-600">
-              Archetype: <span className="font-medium">{archetype}</span> — Streak: <span className="font-medium">{streak}</span> days
-            </div>
-          </div>
-          <div className="space-x-2">
-            <Link href="/quiz" className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-black transition">
-              Take Deep Quiz
-            </Link>
-            <Link href="/stress-quiz" className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-              Stress Assessment
-            </Link>
-            <Link href="/lifestyle-quiz" className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
-              Lifestyle Quiz
-            </Link>
-            <Link href="/daily-schedule" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
-              Daily Schedule
-            </Link>
-          </div>
-        </div>
-
-        <div className="space-y-6 max-w-2xl">
-          {/* Inputs */}
-          <div className="bg-white p-6 rounded-2xl border shadow-sm space-y-6">
-            <div>
-              <label className="block font-medium mb-1">Stress Level</label>
-              <input
-                type="range"
-                min="0"
-                max="10"
-                value={form.stress}
-                onChange={e => handleSlider('stress', e.target.value)}
-                className="w-full"
-              />
-              <div className="mt-1 text-sm">Level: {form.stress}</div>
-            </div>
-            <div>
-              <label className="block font-medium mb-1">Caffeine</label>
-              <select
-                name="caffeine"
-                value={form.caffeine}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-              >
-                <option>none</option>
-                <option>low</option>
-                <option>medium</option>
-                <option>high</option>
-              </select>
-            </div>
-            <div>
-              <label className="block font-medium mb-1">Alcohol/Drugs</label>
-              <select
-                name="alcohol"
-                value={form.alcohol}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-              >
-                <option>none</option>
-                <option>occasional</option>
-                <option>regular</option>
-              </select>
-            </div>
-            <div>
-              <label className="block font-medium mb-1">Relationships</label>
-              <select
-                name="relationships"
-                value={form.relationships}
-                onChange={handleChange}
-                className="w-full p-3 border rounded-lg"
-              >
-                <option>weak</option>
-                <option>average</option>
-                <option>strong</option>
-              </select>
-            </div>
-          </div>
-
-          <button
-            onClick={generate}
-            disabled={loading}
-            className="w-full bg-black text-white py-3 rounded-lg text-lg hover:bg-gray-800 transition"
-          >
-            {loading ? 'Generating…' : 'Generate Steps'}
-          </button>
-
-          {plan && (
-            <div className="bg-white p-6 rounded-2xl border shadow-sm prose">
-              <h2 className="text-2xl font-semibold mb-4">Your Steps</h2>
-              <ol className="list-decimal list-inside space-y-2">
-                {plan.split('\n').map((line, i) => (
-                  <li key={i}>{line}</li>
-                ))}
-              </ol>
-            </div>
-          )}
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold mb-2">AI Life Planner</h1>
+        <p className="text-gray-600">Loading your dashboard...</p>
       </div>
-    </>
+    </div>
   );
 }

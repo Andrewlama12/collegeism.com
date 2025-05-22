@@ -58,14 +58,14 @@ export default function LifePlannerForm() {
         name,
         value,
         onChange,
-        className: 'w-full p-3 border border-gray-300 rounded-lg appearance-none pr-10 bg-white'
+        className: 'w-full p-3 border border-gray-100 rounded-lg appearance-none pr-10 bg-white text-lg'
       }, options.map(opt => 
         React.createElement('option', { key: opt.value, value: opt.value }, opt.label)
       )),
       React.createElement('div', {
-        className: 'absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none'
+        className: 'absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none'
       }, React.createElement('svg', {
-        className: 'w-5 h-5 text-gray-500',
+        className: 'w-4 h-4 text-gray-400',
         fill: 'none',
         stroke: 'currentColor',
         viewBox: '0 0 24 24'
@@ -80,20 +80,20 @@ export default function LifePlannerForm() {
 
   // Create form section
   const formSection = React.createElement('div', {
-    className: 'w-full md:w-1/2 p-8 md:p-12 md:border-r border-gray-200'
+    className: 'w-full md:w-1/2 p-10 md:p-16 md:border-r border-gray-100 flex flex-col'
   }, [
     // Title
     React.createElement('h1', { 
       key: 'title',
-      className: 'text-4xl font-bold mb-8' 
+      className: 'text-4xl font-bold mb-14' 
     }, 'Stress Reduction'),
     
     // Form content
-    React.createElement('div', { key: 'form', className: 'space-y-6' }, [
+    React.createElement('div', { key: 'form', className: 'space-y-8 flex-grow' }, [
       // Age
       React.createElement('div', { key: 'age-group' }, [
         React.createElement('label', { 
-          className: 'block text-xl mb-2' 
+          className: 'block text-xl mb-3 font-normal' 
         }, 'Age'),
         createSelect('age', form.age, handleChange, [
           { value: '20', label: '20' },
@@ -107,7 +107,7 @@ export default function LifePlannerForm() {
       // Occupation
       React.createElement('div', { key: 'occupation-group' }, [
         React.createElement('label', { 
-          className: 'block text-xl mb-2' 
+          className: 'block text-xl mb-3 font-normal' 
         }, 'Occupation'),
         createSelect('occupation', form.occupation, handleChange, [
           { value: 'Engineer', label: 'Engineer' },
@@ -122,10 +122,10 @@ export default function LifePlannerForm() {
       // Stress Level
       React.createElement('div', { key: 'stress-group' }, [
         React.createElement('label', { 
-          className: 'block text-xl mb-2' 
+          className: 'block text-xl mb-3 font-normal' 
         }, 'Stress Level'),
         React.createElement('div', {
-          className: 'flex items-center gap-4'
+          className: 'flex items-center space-x-4'
         }, [
           React.createElement('input', {
             type: 'range',
@@ -133,10 +133,10 @@ export default function LifePlannerForm() {
             max: '5',
             value: form.stressLevel,
             onChange: (e) => handleSliderChange('stressLevel', e.target.value),
-            className: 'w-full h-1 bg-gray-200 rounded appearance-none'
+            className: 'w-full h-1 bg-gray-200 rounded-full appearance-none'
           }),
           React.createElement('span', {
-            className: 'text-xl font-medium'
+            className: 'text-xl'
           }, form.stressLevel)
         ])
       ]),
@@ -144,7 +144,7 @@ export default function LifePlannerForm() {
       // Caffeine Consumption
       React.createElement('div', { key: 'caffeine-group' }, [
         React.createElement('label', { 
-          className: 'block text-xl mb-2' 
+          className: 'block text-xl mb-3 font-normal' 
         }, 'Caffeine Consumption'),
         createSelect('caffeine', form.caffeine, handleChange, [
           { value: 'None', label: 'None' },
@@ -157,7 +157,7 @@ export default function LifePlannerForm() {
       // Relationship Strength
       React.createElement('div', { key: 'relationship-group' }, [
         React.createElement('label', { 
-          className: 'block text-xl mb-2' 
+          className: 'block text-xl mb-3 font-normal' 
         }, 'Relationship Strength'),
         createSelect('relationship', form.relationship, handleChange, [
           { value: 'Single', label: 'Single' },
@@ -172,32 +172,32 @@ export default function LifePlannerForm() {
         key: 'generate-btn',
         onClick: handleSubmit,
         disabled: loading,
-        className: 'w-full p-3 mt-4 bg-white border border-gray-300 rounded-lg text-lg font-medium hover:bg-gray-50 transition-all'
+        className: 'w-full p-3 mt-8 bg-white border border-gray-200 rounded-lg text-lg font-normal hover:bg-gray-50 transition-all'
       }, loading ? 'Generating...' : 'Generate Plan')
     ])
   ]);
 
   // Create steps section
   const stepsSection = React.createElement('div', {
-    className: 'w-full md:w-1/2 p-8 md:p-12 bg-white'
+    className: 'w-full md:w-1/2 p-10 md:p-16 bg-white'
   }, [
     // Title
     React.createElement('h1', { 
       key: 'title',
-      className: 'text-4xl font-bold mb-8' 
+      className: 'text-4xl font-bold mb-14' 
     }, 'Personalized Steps'),
     
     // Steps content
     React.createElement('div', { 
       key: 'steps-content',
-      className: 'space-y-5' 
+      className: 'space-y-6' 
     }, steps.length > 0 
       ? steps.map((step, index) => 
           React.createElement('div', {
             key: `step-${index}`,
-            className: 'p-5 bg-white border border-gray-200 rounded-xl'
+            className: 'p-6 bg-white border border-gray-100 rounded-2xl shadow-sm'
           }, React.createElement('p', {
-            className: 'text-xl'
+            className: 'text-xl font-normal'
           }, step))
         )
       : [React.createElement('p', {

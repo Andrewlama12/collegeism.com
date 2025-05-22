@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     const openai = new OpenAIApi(configuration);
 
     const response = await openai.createChatCompletion({
-      model: 'gpt-4o', // or use 'gpt-3.5-turbo' if gpt-4o is not accessible
+      model: 'gpt-4o', // or use 'gpt-3.5-turbo' if gpt-4o is unavailable
       messages: [
         {
           role: 'system',
@@ -55,11 +55,12 @@ export default async function handler(req, res) {
     const fullError = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
     console.error("🔥 OPENAI ERROR:", fullError);
 
-    // Always send a JSON response
     return res.status(500).json({
-      error: error?.response?.data?.error?.message ||
-             error?.message ||
-             "❌ Unknown server error occurred during OpenAI call.",
+      error:
+        (typeof error === 'string' && error) ||
+        error?.response?.data?.error?.message ||
+        error?.message ||
+        "❌ Unknown server error occurred during OpenAI call.",
     });
   }
 }

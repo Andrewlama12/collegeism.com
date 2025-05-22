@@ -20,6 +20,9 @@ export default function LifePlannerForm() {
     notes: ''
   });
 
+  const [response, setResponse] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
@@ -37,13 +40,21 @@ export default function LifePlannerForm() {
   const handleBack = () => setStep((s) => Math.max(s - 1, 0));
 
   const handleSubmit = async () => {
-    const res = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    const data = await res.json();
-    alert(data.result || data.error);
+    setLoading(true);
+    setResponse('');
+    try {
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      setResponse(data.result || data.error || 'No response received');
+    } catch (err) {
+      setResponse('Error submitting form: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -129,9 +140,17 @@ export default function LifePlannerForm() {
         {step < steps.length - 1 ? (
           <button onClick={handleNext} className="px-4 py-2 bg-blue-600 text-white">Next</button>
         ) : (
-          <button onClick={handleSubmit} className="px-4 py-2 bg-green-600 text-white">Generate Plan</button>
+          <button onClick={handleSubmit} className="px-4 py-2 bg-green-600 text-white" disabled={loading}>
+            {loading ? 'Generating...' : 'Generate Plan'}
+          </button>
         )}
       </div>
+
+      {response && (
+        <div className="mt-6 p-4 bg-gray-100 whitespace-pre-wrap rounded border">
+          {response}
+        </div>
+      )}
     </div>
   );
 }

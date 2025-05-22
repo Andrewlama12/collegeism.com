@@ -1,31 +1,27 @@
 import { useState } from 'react';
-
-const steps = [
-  'Age & Time',
-  'Stressors & Goal',
-  'Income & Living',
-  'Location & Notes'
-];
+import Head from 'next/head';
 
 export default function LifePlannerForm() {
-  const [step, setStep] = useState(0);
   const [form, setForm] = useState({
     age: '',
-    time: '',
+    time: 1,
     stressors: [],
     goal: '',
-    income: '',
+    income: 1000,
     living: '',
     location: '',
-    notes: ''
   });
 
-  const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSliderChange = (name, value) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCheckboxChange = (e) => {
@@ -35,9 +31,6 @@ export default function LifePlannerForm() {
       : form.stressors.filter((s) => s !== value);
     setForm({ ...form, stressors: updated });
   };
-
-  const handleNext = () => setStep((s) => Math.min(s + 1, steps.length - 1));
-  const handleBack = () => setStep((s) => Math.max(s - 1, 0));
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -58,42 +51,66 @@ export default function LifePlannerForm() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-8 bg-white shadow-md rounded-lg font-sans">
-      <h1 className="text-3xl font-semibold mb-6">🧠 AI Life Planner</h1>
-      <div className="text-sm text-gray-500 mb-6">Step {step + 1} of {steps.length}: <span className="text-gray-700 font-medium">{steps[step]}</span></div>
+    <>
+      <Head>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+      </Head>
+      <div className="min-h-screen bg-gray-50 px-6 py-12 font-[Montserrat] text-gray-800">
+        <div className="max-w-3xl mx-auto text-lg space-y-8">
+          <h1 className="text-4xl font-semibold mb-6">AI Life Planner</h1>
 
-      <div className="space-y-6">
-        {step === 0 && (
-          <div className="grid gap-6">
-            <input name="age" value={form.age} onChange={handleChange} placeholder="Age" className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            <select name="time" value={form.time} onChange={handleChange} className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Time available per day</option>
-              <option value="30 mins">30 mins</option>
-              <option value="1 hour">1 hour</option>
-              <option value="2+ hours">2+ hours</option>
+          {/* AGE */}
+          <div>
+            <label className="block mb-2 font-semibold">Your Age Range</label>
+            <select name="age" value={form.age} onChange={handleChange} className="w-full p-3 rounded-md border">
+              <option value="">Select</option>
+              <option value="18–22">18–22</option>
+              <option value="23–30">23–30</option>
+              <option value="31–40">31–40</option>
+              <option value="41–55">41–55</option>
+              <option value="56+">56+</option>
             </select>
           </div>
-        )}
 
-        {step === 1 && (
-          <div className="grid gap-6">
-            <div className="text-sm font-medium text-gray-700">Top stressors:</div>
+          {/* TIME SLIDER */}
+          <div>
+            <label className="block mb-2 font-semibold">Hours Free per Day</label>
+            <input
+              type="range"
+              min="0"
+              max="6"
+              step="1"
+              value={form.time}
+              onChange={(e) => handleSliderChange('time', e.target.value)}
+              className="w-full"
+            />
+            <div className="text-sm mt-1">~ {form.time} hour(s) daily</div>
+          </div>
+
+          {/* STRESSORS */}
+          <div>
+            <label className="block mb-2 font-semibold">Top Stressors</label>
             <div className="grid grid-cols-2 gap-2">
               {['money', 'school', 'job', 'relationships', 'mental health', 'body'].map((s) => (
-                <label key={s} className="flex items-center gap-2 text-sm">
+                <label key={s} className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     value={s}
                     checked={form.stressors.includes(s)}
                     onChange={handleCheckboxChange}
-                    className="accent-blue-500"
+                    className="accent-gray-700"
                   />
                   {s}
                 </label>
               ))}
             </div>
-            <select name="goal" value={form.goal} onChange={handleChange} className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Main goal</option>
+          </div>
+
+          {/* GOAL */}
+          <div>
+            <label className="block mb-2 font-semibold">Main Life Goal</label>
+            <select name="goal" value={form.goal} onChange={handleChange} className="w-full p-3 rounded-md border">
+              <option value="">Select</option>
               <option value="clarity">Clarity</option>
               <option value="routine">Routine</option>
               <option value="productivity">Productivity</option>
@@ -101,61 +118,64 @@ export default function LifePlannerForm() {
               <option value="peace">Peace</option>
             </select>
           </div>
-        )}
 
-        {step === 2 && (
-          <div className="grid gap-6">
-            <select name="income" value={form.income} onChange={handleChange} className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Monthly income</option>
-              <option value="<$1k">&lt;$1k</option>
-              <option value="$1k–$3k">$1k–$3k</option>
-              <option value=">$3k">&gt;$3k</option>
-            </select>
-            <select name="living" value={form.living} onChange={handleChange} className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Living situation</option>
+          {/* INCOME SLIDER */}
+          <div>
+            <label className="block mb-2 font-semibold">Monthly Income</label>
+            <input
+              type="range"
+              min="0"
+              max="10000"
+              step="500"
+              value={form.income}
+              onChange={(e) => handleSliderChange('income', e.target.value)}
+              className="w-full"
+            />
+            <div className="text-sm mt-1">~ ${form.income}/mo</div>
+          </div>
+
+          {/* LIVING */}
+          <div>
+            <label className="block mb-2 font-semibold">Living Situation</label>
+            <select name="living" value={form.living} onChange={handleChange} className="w-full p-3 rounded-md border">
+              <option value="">Select</option>
               <option value="alone">Alone</option>
               <option value="parents">With parents</option>
               <option value="partner">With partner</option>
               <option value="roommates">With roommates</option>
             </select>
           </div>
-        )}
 
-        {step === 3 && (
-          <div className="grid gap-6">
-            <select name="location" value={form.location} onChange={handleChange} className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Location type</option>
+          {/* LOCATION */}
+          <div>
+            <label className="block mb-2 font-semibold">Location Type</label>
+            <select name="location" value={form.location} onChange={handleChange} className="w-full p-3 rounded-md border">
+              <option value="">Select</option>
               <option value="city">City</option>
               <option value="suburb">Suburb</option>
               <option value="rural">Rural</option>
             </select>
-            <textarea
-              name="notes"
-              value={form.notes}
-              onChange={handleChange}
-              placeholder="Anything else you're feeling or dealing with"
-              className="border border-gray-300 rounded-md p-3 h-28 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
           </div>
-        )}
-      </div>
 
-      <div className="mt-8 flex justify-between">
-        {step > 0 && <button onClick={handleBack} className="px-4 py-2 text-sm border border-gray-300 rounded-md">Back</button>}
-        {step < steps.length - 1 ? (
-          <button onClick={handleNext} className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md">Next</button>
-        ) : (
-          <button onClick={handleSubmit} className="px-4 py-2 text-sm bg-green-600 text-white rounded-md" disabled={loading}>
-            {loading ? 'Generating...' : 'Generate Plan'}
-          </button>
-        )}
-      </div>
+          {/* SUBMIT */}
+          <div>
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full bg-black text-white py-3 rounded-md text-xl hover:bg-gray-800 transition"
+            >
+              {loading ? 'Generating...' : 'Generate My Plan'}
+            </button>
+          </div>
 
-      {response && (
-        <div className="mt-8 border-t pt-6 text-gray-800 leading-relaxed whitespace-pre-wrap text-[15px] font-light">
-          {response}
+          {/* RESPONSE */}
+          {response && (
+            <div className="mt-8 p-6 bg-white rounded-xl border border-gray-200 shadow-sm whitespace-pre-wrap leading-relaxed">
+              {response}
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }

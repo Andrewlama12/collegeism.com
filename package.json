@@ -1,0 +1,17 @@
+{
+  "name": "ai-life-planner",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.3.2",
+    "openai": "^4.102.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

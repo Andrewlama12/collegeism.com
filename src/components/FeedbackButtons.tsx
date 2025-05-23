@@ -13,8 +13,6 @@ export const FeedbackButtons: React.FC<FeedbackButtonsProps> = ({
   onFeedback
 }) => {
   const handleFeedback = (liked: boolean) => {
-    console.log('FeedbackButtons: handleFeedback called', { contentId, contentType, liked });
-    
     const preference: ContentPreference = {
       id: contentId,
       type: contentType,
@@ -22,21 +20,15 @@ export const FeedbackButtons: React.FC<FeedbackButtonsProps> = ({
       timestamp: new Date().toISOString()
     };
     
-    try {
-      console.log('FeedbackButtons: Saving preference', preference);
-      const updatedPrefs = savePreference(preference);
-      console.log('FeedbackButtons: Preference saved successfully', updatedPrefs);
-      onFeedback(liked);
-    } catch (error) {
-      console.error('FeedbackButtons: Error saving preference:', error);
-    }
+    savePreference(preference);
+    onFeedback(liked);
   };
 
   return (
     <div className="flex gap-2">
       <button
         onClick={() => handleFeedback(true)}
-        className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
         aria-label="Like"
       >
         <svg
@@ -52,7 +44,7 @@ export const FeedbackButtons: React.FC<FeedbackButtonsProps> = ({
       </button>
       <button
         onClick={() => handleFeedback(false)}
-        className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
+        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
         aria-label="Dislike"
       >
         <svg

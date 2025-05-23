@@ -1,77 +1,46 @@
-# AI Life Planner
+# Getting Started with Create React App
 
-A personalized life planning application that uses AI to provide tailored recommendations for news, music, and daily activities.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Features
+## Available Scripts
 
-- Personalized news feed
-- Music recommendations
-- Weather updates
-- Financial insights
-- AI-powered daily questions
-- OCEAN model personality tracking
+In the project directory, you can run:
 
-## Setup
+### `npm start`
 
-1. Clone the repository:
-```bash
-git clone <your-repo-url>
-cd ai-life-planner
-```
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-2. Install dependencies:
-```bash
-npm install
-```
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-3. Create a `.env` file in the root directory with your API keys:
-```
-VITE_OPENAI_API_KEY=your_openai_key
-VITE_WEATHER_API_KEY=your_weather_key
-VITE_LASTFM_API_KEY=your_lastfm_key
-VITE_POLYGON_API_KEY=your_polygon_key
-VITE_NEWS_API_KEY=your_news_key
-```
+### `npm test`
 
-4. Run the development server:
-```bash
-npm run dev
-```
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-## Deployment
+### `npm run build`
 
-This project is configured for deployment on Vercel. To deploy:
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-1. Install Vercel CLI:
-```bash
-npm install -g vercel
-```
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-2. Login to Vercel:
-```bash
-vercel login
-```
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-3. Deploy:
-```bash
-vercel
-```
+### `npm run eject`
 
-4. Add environment variables in the Vercel dashboard:
-- Go to your project settings
-- Navigate to the Environment Variables section
-- Add all the required API keys from your `.env` file
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-## Development
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build locally
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-## Tech Stack
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- Various APIs (OpenAI, Weather, Last.fm, Polygon, News)
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).

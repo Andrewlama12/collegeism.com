@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
-import type { Profile } from '../types/profile';
+
+interface UserProfile {
+  name: string;
+  dateOfBirth: string;
+  location: string;
+  musicService: 'spotify' | 'appleMusic';
+}
 
 interface MasterQuizProps {
-  onComplete: (profile: Profile) => void;
+  onComplete: (profile: UserProfile) => void;
 }
 
 const MasterQuiz: React.FC<MasterQuizProps> = ({ onComplete }) => {
   const [step, setStep] = useState(1);
-  const [profile, setProfile] = useState<Profile>({
+  const [profile, setProfile] = useState<UserProfile>({
     name: '',
     dateOfBirth: '',
     location: '',
-    musicService: 'spotify',
-    completedQuestions: [],
-    categoryQueue: [],
-    onboardingComplete: false
+    musicService: 'spotify'
   });
 
   const handleNext = () => {

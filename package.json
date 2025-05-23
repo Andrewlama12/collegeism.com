@@ -2,7 +2,6 @@
   "name": "ai-life-planner",
   "version": "0.1.0",
   "private": true,
-<<<<<<< HEAD
   "dependencies": {
     "@testing-library/dom": "^9.3.3",
     "@testing-library/jest-dom": "^6.1.4",
@@ -48,19 +47,6 @@
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.16",
     "tailwindcss": "^3.3.5",
-    "vite": "^4.5.0"
-=======
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "next": "15.3.2",
-    "openai": "^4.102.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
->>>>>>> c9168813f40d4de77091461de836bf52d4111b95
+    "vite": "^6.3.5"
   }
 }

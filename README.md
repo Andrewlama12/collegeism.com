@@ -1,4 +1,4 @@
-# 🌍 Collegeism – The Clarity Layer for Human Progress
+# 🌍 Collegeism – Let's understand the world we live in
 
 **Collegeism** is an open-source platform designed to help humanity think clearly, disagree intelligently, and act purposefully in an age overwhelmed by misinformation, noise, and division.
 

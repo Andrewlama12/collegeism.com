@@ -16,36 +16,14 @@ Collegeism exists to bridge the growing divide between what we know, what we fee
 
 ## 🧠 What We’re Building
 
-### 1. Rabbit-Hole Explainers
-Layered, shareable, bias-aware explainers of the most important issues today.
-
-- Multi-perspective breakdowns (Left, Right, Global South, etc.)
-- Includes emotional tone analysis and system-wide consequences
-- GPT-assisted but human-refined
-
-### 2. The Collegeism Compass
-A dynamic global dashboard showing:
-
-- What issues matter most
-- How well humanity understands them
-- How fixable and urgent they are
-- What actions are gaining traction
-
-### 3. Intelligent Comment System
-Redesigned from scratch to promote clarity and collective insight.
-
-- AI-refined comment input
-- Only 10–100 top comments shown per topic
-- All replies summarized into common agreements, disagreements, and ideas
-- No likes — just usefulness and understanding metrics
-
-### 4. Personal Impact Dashboard
-Your contribution to global clarity, tracked and personalized.
-
-- Daily civic action suggestions
-- Stats like “You helped 3 people understand misinformation better”
-- Reflective prompts and curated reading
-
+- A system of clear, bias-aware explainers that break down complex global issues from multiple perspectives (e.g. left, right, global)
+- A rabbit-hole format that helps users go deeper into the root causes, data, emotional framing, and long-term consequences of key topics
+- A global “Compass” dashboard that shows which issues matter most, how well they’re understood, how urgent they are, and what actions are gaining traction
+- An intelligent comment system where user replies are refined with AI, tagged by purpose (insight, question, counterpoint), and summarized into collective agreements and disagreements
+- A filter that limits comment visibility to only the 10–100 most useful contributions per topic
+- A feedback engine that tracks each user’s impact — how many people their input helped understand an issue
+- Personalized prompts for civic action, curated reading, or contribution opportunities based on what users care about
+- A fully open-source infrastructure where anyone can suggest topics, contribute to explainers, improve GPT prompts, or build new tools around clarity and understanding
 ---
 
 ## 💡 Why Collegeism?

@@ -81,11 +81,7 @@ We’re looking for:
 - GPT prompt engineers
 - Systems thinkers and signal-seekers
 
-### 👇 Start Here:
-1. Fork this repo
-2. Read [`CONTRIBUTING.md`](./CONTRIBUTING.md)
-3. Join our [Discord](#) (link coming soon)
-4. Open an issue with your idea, suggestion, or offer to help
+
 
 ---
 
